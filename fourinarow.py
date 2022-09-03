@@ -63,13 +63,18 @@ class FourInaRow():
 
     players = [1,-1]
 
-    def __init__(self,data = None):
+    def __init__(self,data = None,turn:int = 0):
         if type(data) != np.ndarray:
             data  = start_data.copy()
-        self.next_player = 1
+        self.turn = turn
         self.data = data
-        self.next_player,self.last_player = self.players
+        self.next_player = self.players[turn%2]
+        self.last_player = self.players[(turn+1)%2]
         self.winner = 0
+        self.possible_moves = np.where(self.data[0,:] == 0)[0]
+        if self.possible_moves.shape == (0,):
+            self.winner = 2
+
 
 
     def __repr__(self):
@@ -92,6 +97,8 @@ class FourInaRow():
 
         if self.winner !=0:
             res += f"\ngame over. {tiles[self.winner]} won.\n"
+        else:
+            res += f"\nnext move: {tiles[self.next_player]}"
 
         return res
 
@@ -100,26 +107,23 @@ class FourInaRow():
 
         assert self.data[0,move] == 0, f"error no more space on column {move}"
 
-        row =  np.where(self.data[:,move] == 0)[0][-1]
-        # print(row)
-        self.data[row,move] = self.next_player
 
+        data = self.data.copy()
+        row =  np.where(self.data[:,move] == 0)[0][-1]
+
+        data[row,move] = self.next_player
+        result:FourInaRow= FourInaRow(data,self.turn +1)
+
+        # print(row)
 
         #check whether the last move ended the game
         own_winning_conditions = winning_conditions[row][move]
-        gameover = (self.data[own_winning_conditions]== self.next_player).all(1).any()
+        gameover = (result.data[own_winning_conditions]== self.next_player).all(1).any()
         if gameover:
-            self.winner = self.next_player
+            result.winner = self.next_player
         
-        self.next_player,self.last_player = self.last_player, self.next_player
-        return gameover
-
-
-
-    
-    def get_possible_moves(self) -> np.ndarray:
-        return np.where(self.data[0,:] == 0)[0]
-
+        
+        return result
 
 
 example_board = FourInaRow( np.array([
