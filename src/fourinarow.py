@@ -12,62 +12,60 @@ start_data = np.zeros((height,width))
 
 #generate winning conditions ahead of time
 def generate_winning_conditions():
-
-    down_offsets = np.array([[1,2,3],[0,0,0]])
-    right_offsets = np.array([[0,0,0],[1,2,3]])
-    left_offsets = - right_offsets
-    left_down_offsets = left_offsets+down_offsets
-    right_down_offsets = right_offsets +down_offsets
-    left_up_offsets = left_offsets - down_offsets
-    right_up_offsets = right_offsets - down_offsets
+    
+    a = np.arange(4)
+    z = np.array([0,0,0,0])
 
 
-    def add_check(conditions,offsets,row,column):
-        arr = offsets+np.array([row,column]).repeat(3).reshape([2,-1])
-        conditions.append(arr)
+    directions = np.array([
+        [a,z],
+        [a,a],
+        [z,a],
+        [a,-a]
+    ])
 
-    conditions = []
+
+    conditions = [None]*height
+
+
     for row in range(height):
-        row_conditions = []
+        conditions [row] = [None] * width
         for column in range(width):
-            tile_conditions = []
-            if row <=height - 4:
-                #checkdown
-                add_check(tile_conditions,down_offsets,row,column)
+            
+            tile_conditions:List[np.ndarray] = []
 
-                if column >=4-1:
-                    #check left and down
-                    add_check(tile_conditions, left_down_offsets,row,column)
-                    add_check(tile_conditions,left_offsets,row,column)
-                if column <= width - 4:
-                    #check right and down
-                    add_check(tile_conditions,right_down_offsets,row,column)
-                    add_check(tile_conditions, right_offsets,row,column)
-            else:
-                if column >=4-1:
-                    #check left and down
-                    add_check(tile_conditions,left_offsets,row,column)
-                if column <= width - 4:
-                    #check right and down
-                    add_check(tile_conditions, right_offsets,row,column)
-            if row >= 4 - 1:
-                #checkup
-                if column >=4-1:
-                    #check left and up
-                    add_check(tile_conditions,left_up_offsets,row,column)
-                if column <= width -4:
-                    #check right and up
-                    add_check(tile_conditions,right_up_offsets,row,column)
+            for dir in directions:
+
+                x = row
+                y = column
+
+                dirx = dir[0]
+                diry = dir[1]
+
+                for i in range(4):
+                    # x -= dirx [i]
+                    # y -= diry [i]
+                
+
+                    dirx = dir[0]
+                    diry = dir[1]
+                    dir = np.array([
+                        
+                        dirx + x - dirx[i],
+                        diry + y - diry[i]])
+                    
+                    if (dir[0]>=0).all() and (dir[0] < height).all() and (dir[1] >=0).all() and (dir[1] < width).all():
+
+                        tile_conditions.append(dir)
 
             tile_conditions = np.concatenate(tile_conditions)
 
-            row_conditions.append((
-                tile_conditions[0::2],
-                tile_conditions[1::2]
-                ))
+                
+            # print(row,column,len(conditions))
+            conditions[row][column] = (tile_conditions[0::2],tile_conditions[1::2])
 
-        conditions.append(row_conditions)
     return conditions
+
 
 winning_conditions = generate_winning_conditions()
 
