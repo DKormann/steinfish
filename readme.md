@@ -9,12 +9,12 @@ Applying Monte Carlo tree search and UCB for four in a row. Inspired by alphago.
 ## Try it out
 
 ```
-python -c "from steinfish import console_game; console_game()"
+python steinfish/play.py
 ```
 
 or in ipython console:
 
 ```
 from steinfish import *
-console_game()
+game(Monte(emotional = True), Console)
 ```

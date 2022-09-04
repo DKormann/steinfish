@@ -9,15 +9,44 @@ class Monte(Player):
 
     """Monte carlo player"""
 
-    def __init__(self):
+    def __init__(self,search_depth = 1000 ,emotional = False):
+        self.search_depth = search_depth
+        self.emotional = emotional
         pass
     
     def choose_move(self, game_board:FourInaRow):
         
         root = SearchNode(game_board)
 
-        for i in range (1000):
+        for i in range (self.search_depth):
             root.expand()
+
+        if self.emotional:
+            # print(f"emotion: {-round(100*root.mu,2)}")
+
+            winning_percentage = round(-50*root.mu,2)+50
+            face = ''
+            if winning_percentage > 95:
+                face = '😝'
+            elif winning_percentage > 90:
+                face = '😁'
+            elif winning_percentage > 70:
+                face = '😎'
+            elif winning_percentage > 50:
+                face = '🙂'
+            elif winning_percentage > 30:
+                face = '🤨'
+            elif winning_percentage > 10:
+                face = '😖'
+            elif winning_percentage > 5 :
+                face = '😓'
+            else:
+                face = '😵'
+
+            print (f'\n {face}\n')
+
+
+
         return root.get_best_move()
 
 
