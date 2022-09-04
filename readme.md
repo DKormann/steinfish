@@ -8,4 +8,13 @@ Applying Monte Carlo tree search and UCB for four in a row. Inspired by alphago.
 
 ## Try it out
 
-just run [game.py](game.py)
+```
+python -c "from steinfish import console_game; console_game()"
+```
+
+or in ipython console:
+
+```
+from steinfish import *
+console_game()
+```

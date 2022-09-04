@@ -2,6 +2,10 @@
     "files.exclude": {
         ".gitignore":true,
         "LICENSE":true,
-        "__pycache__":true,
+        "**/__pycache__":true,
+
+    },
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportUndefinedVariable": "none",
     }
 }

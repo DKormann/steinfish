@@ -1,6 +1,8 @@
 import numpy as np
 from typing import List
 
+from .base_classes import GameBoard
+
 
 width = 7
 height = 6
@@ -59,7 +61,7 @@ winning_conditions = generate_winning_conditions()
 
 
 
-class FourInaRow():
+class FourInaRow(GameBoard):
 
     players = [1,-1]
 

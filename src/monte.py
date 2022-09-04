@@ -1,6 +1,6 @@
 import numpy as np
-from fourinarow import FourInaRow
-from players import Player
+from .fourinarow import FourInaRow
+from .base_classes import Player, GameBoard
 
 class Monte(Player):
 
@@ -22,7 +22,7 @@ class Monte(Player):
 
 class SearchNode:
 
-    def __init__(self,board:FourInaRow):
+    def __init__(self,board:GameBoard):
         self.board = board
         self.ucb = 0
         self.options = self.board.possible_moves
