@@ -4,11 +4,12 @@ from .base_classes import Player,GameBoard
 
 def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
 
-    players = {
-        1:playerA,
-        -1:playerB
-    }
     next_player,last_player = playerA,playerB
+
+    players = {
+        1:next_player,
+        -1:last_player
+    }
     board = game_type()
     while board.winner == 0:
         next_player = players[board.next_player]

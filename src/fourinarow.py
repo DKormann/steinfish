@@ -1,3 +1,4 @@
+from turtle import down
 import numpy as np
 from typing import List
 
@@ -17,6 +18,8 @@ def generate_winning_conditions():
     left_offsets = - right_offsets
     left_down_offsets = left_offsets+down_offsets
     right_down_offsets = right_offsets +down_offsets
+    left_up_offsets = left_offsets - down_offsets
+    right_up_offsets = right_offsets - down_offsets
 
 
     def add_check(conditions,offsets,row,column):
@@ -47,6 +50,15 @@ def generate_winning_conditions():
                 if column <= width - 4:
                     #check right and down
                     add_check(tile_conditions, right_offsets,row,column)
+            if row >= 4 - 1:
+                #checkup
+                if column >=4-1:
+                    #check left and up
+                    add_check(tile_conditions,left_up_offsets,row,column)
+                if column <= width -4:
+                    #check right and up
+                    add_check(tile_conditions,right_up_offsets,row,column)
+
             tile_conditions = np.concatenate(tile_conditions)
 
             row_conditions.append((
