@@ -105,7 +105,9 @@ class FourInaRow(GameBoard):
         res += '||'+'='*width*2+'||\n'
         res += f'|| { " ".join(map(lambda x: str(x),range(width)))}||\n'
 
-        if self.winner !=0:
+        if self.winner == 2:
+            res += f"\ndraw."
+        elif self.winner !=0:
             res += f"\ngame over. {tiles[self.winner]} won.\n"
         else:
             res += f"\nnext move: {tiles[self.next_player]}"

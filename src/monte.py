@@ -12,22 +12,36 @@ class Monte(Player):
     def __init__(self,emotional = True, search_depth = 2000):
         self.search_depth = search_depth
         self.emotional = emotional
-        pass
+        self.last_move = 0
+        self.root = None
+
     
     def choose_move(self, game_board:FourInaRow):
+
+
+
+        if self.root :
+            for child in self.root.best_child.children:
+                if (child.board.data == game_board.data).all():
+                    print("found memory")
+                    self.root = child
+                    break
+            self.root = SearchNode(game_board)
         
-        root = SearchNode(game_board)
-        self.root = root
+        
+        else:
+
+            self.root = SearchNode(game_board)
 
         for i in range (self.search_depth):
-            root.expand()
+            self.root.expand()
 
 
 
         if self.emotional:
             # print(f"emotion: {-round(100*root.mu,2)}")
 
-            winning_percentage = round(-50*root.mu,2)+50
+            winning_percentage = round(-50*self.root.mu,2)+50
             face = ''
             if winning_percentage > 95:
                 face = '😝'
@@ -48,13 +62,14 @@ class Monte(Player):
 
             print (f'\n {face}\n')
 
-        return root.get_best_move()
+        return self.root.get_best_move()
 
 
 class SearchNode:
 
+
     def __init__(self,board:FourInaRow,parent = None):
-        self.parent = parent
+        # self.parent = parent
         self.board:FourInaRow = board
         self.ucb = float('inf')
         self.n = 0
@@ -70,7 +85,10 @@ class SearchNode:
 
         res = 0
         if self.board.winner != 0:
-            # because 4inarow always is won with the last move we can assume that if the game is won the current player has won it.
+            if self.board.winner == 2:
+                self.n += 1
+                self.res = 0
+                return 0
             self.res += 1
             self.n += 1
             return 1
@@ -114,16 +132,19 @@ class SearchNode:
         # get best move by node mu
 
         best_mu = self.children[0].mu
+        self.best_child = self.children[0]
         best_move_index = 0
 
         for i in range(len(self.children)):
             child = self.children[i]
             if child.mu > best_mu:
                 best_mu = child.mu
+                self.best_child = child
                 best_move_index = i
         return self.options[best_move_index]
 
-    
+    def __hash__(self):
+        return hash(str(self.board.data))
 
     def __repr__(self):
         board_repr = str(self.board).split('\n')
