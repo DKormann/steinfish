@@ -9,7 +9,7 @@ class Monte(Player):
 
     """Monte carlo player"""
 
-    def __init__(self,search_depth = 1000 ,emotional = False):
+    def __init__(self,emotional = True, search_depth = 2000):
         self.search_depth = search_depth
         self.emotional = emotional
         pass
@@ -17,9 +17,12 @@ class Monte(Player):
     def choose_move(self, game_board:FourInaRow):
         
         root = SearchNode(game_board)
+        self.root = root
 
         for i in range (self.search_depth):
             root.expand()
+
+
 
         if self.emotional:
             # print(f"emotion: {-round(100*root.mu,2)}")
@@ -45,15 +48,13 @@ class Monte(Player):
 
             print (f'\n {face}\n')
 
-
-
         return root.get_best_move()
-
 
 
 class SearchNode:
 
-    def __init__(self,board:FourInaRow):
+    def __init__(self,board:FourInaRow,parent = None):
+        self.parent = parent
         self.board:FourInaRow = board
         self.ucb = float('inf')
         self.n = 0
@@ -79,17 +80,17 @@ class SearchNode:
 
             self.options = np.random.choice(self.options,self.options.shape[0],replace=False)
 
-
         if self.n < self.options.shape[0]:
             # discover new options
             new_move = self.options[self.n]
             new_board = self.board.make_move(new_move)
-            new_node = SearchNode(new_board)
+            new_node = SearchNode(new_board,self)
             self.children.append(new_node)
-            
             res = - new_node.expand()
+
             
         else :
+
             #find best leaf to expand
 
             best_ucb = -float('inf')
@@ -99,7 +100,9 @@ class SearchNode:
                     best_ucb = ucb
                     best_child = child
             res = - best_child.expand()
-            
+
+            # if self.n == self.options.shape[0]:
+                # print(best_child.board)
 
         self.res += res
         self.n += 1
@@ -120,5 +123,12 @@ class SearchNode:
                 best_move_index = i
         return self.options[best_move_index]
 
-            
+    
+
+    def __repr__(self):
+        board_repr = str(self.board).split('\n')
+        board_repr[0] += f' n: {self.n}'
+        board_repr[1] += f' mu: {self.mu}'
+
+        return '\n'.join(board_repr)
         

@@ -13,9 +13,8 @@ start_data = np.zeros((height,width))
 #generate winning conditions ahead of time
 def generate_winning_conditions():
     
-    a = np.arange(4)
+    a = np.array([0,1,2,3])
     z = np.array([0,0,0,0])
-
 
     directions = np.array([
         [a,z],
@@ -23,7 +22,6 @@ def generate_winning_conditions():
         [z,a],
         [a,-a]
     ])
-
 
     conditions = [None]*height
 
@@ -104,8 +102,8 @@ class FourInaRow(GameBoard):
             for tile in row:
                 res += tiles[tile]
             res += '||\n'
-        res += '||'+'='*14+'||\n'
-        res += '||0 1 2 3 4 5 6 ||\n'
+        res += '||'+'='*width*2+'||\n'
+        res += f'|| { " ".join(map(lambda x: str(x),range(width)))}||\n'
 
         if self.winner !=0:
             res += f"\ngame over. {tiles[self.winner]} won.\n"
