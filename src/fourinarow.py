@@ -85,8 +85,6 @@ class FourInaRow(GameBoard):
         if self.possible_moves.shape == (0,):
             self.winner = 2
 
-
-
     def __repr__(self):
 
         """print out ui representation
