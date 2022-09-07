@@ -13,7 +13,7 @@ def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
     board = game_type()
     while board.winner == 0:
         next_player = players[board.next_player]
-
+        print(board)
         try:
             move = next_player.choose_move(board)
         except KeyboardInterrupt:
@@ -22,9 +22,14 @@ def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
         if move == -1:
             print("game forfitted")
             board.winner = board.last_player
+            next_player.loose()
             break
         board = board.make_move(move)
-
+    
+    if board.winner in players:
+        players[-board.winner].loose()
+        print(f"{players[board.winner]} wins.")
+    
     return board
 
 
@@ -40,7 +45,7 @@ if __name__ == "__main__":
 class Console(Player):
 
     def choose_move(self,game_board:GameBoard):
-        print(game_board)
+        # print(game_board)
         options = game_board.possible_moves
 
 

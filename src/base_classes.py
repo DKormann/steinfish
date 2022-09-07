@@ -17,3 +17,6 @@ class GameBoard:
 class Player:
 
     def choose_move(self,game_board:GameBoard) -> GameBoard.move:none
+
+    def loose(self):pass
+

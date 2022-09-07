@@ -1,75 +1,15 @@
 from __future__ import annotations
-from math import log, sqrt
-import numpy as np
 from .fourinarow import FourInaRow
-from .base_classes import Player, GameBoard
+import numpy as np
+from math import log,sqrt
 from typing import List
-
-class Monte(Player):
-
-    """Monte carlo player"""
-
-    def __init__(self,emotional = True, search_depth = 2000):
-        self.search_depth = search_depth
-        self.emotional = emotional
-        self.last_move = 0
-        self.root = None
-
-    
-    def choose_move(self, game_board:FourInaRow):
-
-
-
-        if self.root :
-            for child in self.root.best_child.children:
-                if (child.board.data == game_board.data).all():
-                    print("found memory")
-                    self.root = child
-                    break
-            self.root = SearchNode(game_board)
-        
-        
-        else:
-
-            self.root = SearchNode(game_board)
-
-        for i in range (self.search_depth):
-            self.root.expand()
-
-
-
-        if self.emotional:
-            # print(f"emotion: {-round(100*root.mu,2)}")
-
-            winning_percentage = round(-50*self.root.mu,2)+50
-            face = ''
-            if winning_percentage > 95:
-                face = '😝'
-            elif winning_percentage > 90:
-                face = '😁'
-            elif winning_percentage > 70:
-                face = '😎'
-            elif winning_percentage > 50:
-                face = '🙂'
-            elif winning_percentage > 30:
-                face = '🤨'
-            elif winning_percentage > 10:
-                face = '😖'
-            elif winning_percentage > 5 :
-                face = '😓'
-            else:
-                face = '😵'
-
-            print (f'\n {face}\n')
-
-        return self.root.get_best_move()
-
 
 class SearchNode:
 
 
-    def __init__(self,board:FourInaRow,parent = None):
-        # self.parent = parent
+    def __init__(self,board:FourInaRow,parent):
+        self.parent = parent
+        # assert self.parent != None
         self.board:FourInaRow = board
         self.ucb = float('inf')
         self.n = 0
@@ -78,6 +18,9 @@ class SearchNode:
         self.options = board.possible_moves
         self.children:List[SearchNode] = []
 
+    def approximate(self,node:SearchNode):
+        res = - node.expand()
+        return res
 
     
     def expand(self)->int:
@@ -102,9 +45,9 @@ class SearchNode:
             # discover new options
             new_move = self.options[self.n]
             new_board = self.board.make_move(new_move)
-            new_node = SearchNode(new_board,self)
+            new_node = SearchNode(new_board,parent= self)
             self.children.append(new_node)
-            res = - new_node.expand()
+            res = self.approximate(new_node)
 
             
         else :
