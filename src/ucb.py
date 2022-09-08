@@ -7,7 +7,7 @@ from typing import List
 class SearchNode:
 
 
-    def __init__(self,board:FourInaRow,parent):
+    def __init__(self,board:FourInaRow,parent,agent = None):
         self.parent = parent
         # assert self.parent != None
         self.board:FourInaRow = board

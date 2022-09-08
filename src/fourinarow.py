@@ -67,7 +67,11 @@ def generate_winning_conditions():
 
 winning_conditions = generate_winning_conditions()
 
+hasher = 2**np.arange(width*height)
+hasher = hasher.reshape([height,width])
 
+def hash_board(board):
+    return (hasher*board).sum()
 
 class FourInaRow(GameBoard):
 

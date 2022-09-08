@@ -2,7 +2,7 @@ from .fourinarow import FourInaRow
 from .base_classes import Player,GameBoard
 
 
-def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
+def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow,logging = True):
 
     next_player,last_player = playerA,playerB
 
@@ -13,7 +13,7 @@ def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
     board = game_type()
     while board.winner == 0:
         next_player = players[board.next_player]
-        print(board)
+        if logging: print(board)
         try:
             move = next_player.choose_move(board)
         except KeyboardInterrupt:
@@ -27,8 +27,9 @@ def game(playerA:Player, playerB:Player, game_type:GameBoard = FourInaRow):
         board = board.make_move(move)
     
     if board.winner in players:
-        players[-board.winner].loose()
-        print(f"{players[board.winner]} wins.")
+        players[-board.winner].end(-1)
+        players[board.winner].end(1)
+        print(f"{type(players[board.winner]).__name__} wins.")
     
     return board
 

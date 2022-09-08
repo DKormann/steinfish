@@ -15,21 +15,21 @@ class Monte(Player):
         self.last_move = 0
         self.root = None
 
-    
+
     def choose_move(self, game_board:FourInaRow):
 
 
+        found = False
 
         if self.root :
             for child in self.root.best_child.children:
                 if (child.board.data == game_board.data).all():
-                    print("memory found")
-                    self.root = child
-                    break
-        
-        else:
 
-            self.root = self.Search(game_board,None)
+                    self.root = child
+                    found = True
+        
+        if not found:
+            self.root = self.Search(game_board,None,self)
 
         for i in range (self.search_depth):
             self.root.expand()
